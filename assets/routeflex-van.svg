@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 150" role="img" aria-label="Modern commercial delivery van illustration">
+  <defs>
+    <linearGradient id="bodyGrad" x1="0" x2="1">
+      <stop offset="0%" stop-color="#f6f8fb"/>
+      <stop offset="48%" stop-color="#dfe4ea"/>
+      <stop offset="100%" stop-color="#bfc8d1"/>
+    </linearGradient>
+    <linearGradient id="windowGrad" x1="0" x2="1">
+      <stop offset="0%" stop-color="#2b323c"/>
+      <stop offset="100%" stop-color="#171d24"/>
+    </linearGradient>
+    <linearGradient id="shadowGrad" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.02"/>
+    </linearGradient>
+    <linearGradient id="glossGrad" x1="0" x2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <ellipse cx="130" cy="128" rx="94" ry="12" fill="#0a0d10" opacity="0.45"/>
+
+  <g transform="translate(10 6)">
+    <g filter="url(#shadow)" opacity="0.12">
+      <rect x="32" y="64" width="170" height="34" rx="8" fill="#000000"/>
+    </g>
+
+    <g>
+      <rect x="42" y="52" width="138" height="38" rx="8" fill="url(#bodyGrad)" stroke="#8f98a3" stroke-width="1.5"/>
+      <rect x="30" y="64" width="40" height="25" rx="6" fill="url(#bodyGrad)" stroke="#8f98a3" stroke-width="1.5"/>
+      <rect x="180" y="58" width="18" height="35" rx="4" fill="#c5ced6" stroke="#8f98a3" stroke-width="1.5"/>
+
+      <rect x="50" y="58" width="22" height="16" rx="2" fill="url(#windowGrad)"/>
+      <rect x="74" y="58" width="24" height="16" rx="2" fill="url(#windowGrad)"/>
+      <rect x="100" y="58" width="24" height="16" rx="2" fill="url(#windowGrad)"/>
+      <rect x="126" y="58" width="24" height="16" rx="2" fill="url(#windowGrad)"/>
+      <rect x="152" y="58" width="18" height="16" rx="2" fill="url(#windowGrad)"/>
+
+      <rect x="52" y="76" width="112" height="6" rx="3" fill="#d1d7dd" opacity="0.9"/>
+      <rect x="82" y="48" width="46" height="5" rx="2.5" fill="#ff8e1f" opacity="0.95"/>
+
+      <rect x="32" y="69" width="8" height="18" rx="2" fill="#1a222b"/>
+      <rect x="38" y="71" width="5" height="16" rx="1.5" fill="#f2a85f"/>
+      <rect x="178" y="54" width="14" height="3" rx="1.5" fill="#ff8e1f"/>
+
+      <path d="M40 92h158" stroke="#7b8792" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M60 50v-6h55v6" fill="none" stroke="#8f98a3" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M66 40h84" stroke="#b5c0cb" stroke-width="1.5" opacity="0.85"/>
+
+      <path d="M48 90h146" stroke="#ffffff" stroke-opacity="0.5" stroke-width="1.1"/>
+      <path d="M45 54h142" stroke="url(#glossGrad)" stroke-width="2" opacity="0.8"/>
+
+      <g>
+        <circle cx="72" cy="106" r="13" fill="#1a2128" stroke="#8f98a3" stroke-width="2"/>
+        <circle cx="72" cy="106" r="5.5" fill="#d6dde3"/>
+        <circle cx="168" cy="106" r="13" fill="#1a2128" stroke="#8f98a3" stroke-width="2"/>
+        <circle cx="168" cy="106" r="5.5" fill="#d6dde3"/>
+      </g>
+
+      <rect x="119" y="81" width="16" height="10" rx="2" fill="#e1e7ee" stroke="#9aa7b1" stroke-width="1"/>
+      <rect x="138" y="81" width="12" height="10" rx="2" fill="#e1e7ee" stroke="#9aa7b1" stroke-width="1"/>
+
+      <rect x="188" y="67" width="22" height="8" rx="2" fill="#dfe5eb" stroke="#8f98a3" stroke-width="1"/>
+      <rect x="188" y="76" width="16" height="4" rx="1.5" fill="#aeb8c2"/>
+      <rect x="192" y="59" width="18" height="4" rx="1.5" fill="#ff8e1f" opacity="0.9"/>
+    </g>
+  </g>
+</svg>

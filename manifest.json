@@ -1,0 +1,17 @@
+{
+  "name": "RouteFlex",
+  "short_name": "RouteFlex",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#080b0e",
+  "theme_color": "#0b0f12",
+  "description": "RouteFlex driver route-planning web app",
+  "icons": [
+    {
+      "src": "assets/routeflex-van.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "name": "routeflex",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "python3 -m http.server 8000 --bind 0.0.0.0 --directory /workspaces/Routeflex",
+    "start": "python3 -m http.server 8000 --bind 0.0.0.0 --directory /workspaces/Routeflex"
+  }
+}

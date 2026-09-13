@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, viewport-fit=cover">
+  <meta name="theme-color" content="#0b0f12">
+  <meta name="description" content="Route planner prototype for van drivers">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="RouteFlex">
+  <link rel="manifest" href="manifest.json">
+  <title>RouteFlex — Van Route Planner</title>
+
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="preconnect" href="https://tile.openstreetmap.org">
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    crossorigin=""
+  >
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">➤</div>
+        <div>
+          <div class="brand-name">ROUTE<span>FLEX</span></div>
+          <div class="brand-tag">PLAN. DRIVE. DELIVER.</div>
+        </div>
+      </div>
+      <div class="status-pill"><span class="status-dot"></span> V1 PROTOTYPE</div>
+    </header>
+
+    <section class="hero">
+      <div>
+        <p class="eyebrow">VAN DRIVER ROUTE PLANNER</p>
+        <h1>Get the route.<br><span>Get moving.</span></h1>
+        <p class="hero-copy">
+          Enter your start and delivery postcodes. RouteFlex validates them,
+          orders the stops and draws the road route for you.
+        </p>
+      </div>
+      <div class="hero-icon" aria-hidden="true">
+        <img src="assets/routeflex-van.svg" alt="Modern delivery van" width="220" height="130">
+      </div>
+    </section>
+
+    <section class="workspace">
+      <div class="panel input-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="section-kicker">01</p>
+            <h2>Build your route</h2>
+          </div>
+          <span id="stop-count" class="count-badge">0 / 30</span>
+        </div>
+
+        <label class="field-label" for="start-postcode">Depot / start postcode <span>optional</span></label>
+        <div class="input-row input-with-voice">
+          <input id="start-postcode" class="postcode-input" inputmode="text" autocomplete="postal-code"
+                 maxlength="8" placeholder="e.g. BB10 1AA">
+          <button id="start-voice-button" class="voice-button" type="button" aria-label="Voice input for start postcode">🎙</button>
+        </div>
+
+        <div class="toggle-row">
+          <label class="toggle" aria-label="Return to start">
+            <input id="return-to-start" type="checkbox" checked>
+            <span class="toggle-slider"></span>
+          </label>
+          <span class="toggle-text">Return to start</span>
+        </div>
+
+        <div class="stops-head">
+          <label class="field-label" for="stop-1">Delivery postcodes</label>
+          <button id="add-stop" class="text-button" type="button">+ Add stop</button>
+        </div>
+
+        <div id="stops" class="stops"></div>
+
+        <div class="action-row">
+          <button id="load-example" class="secondary-button" type="button">Load example</button>
+          <button id="clear-all" class="secondary-button" type="button">Clear</button>
+        </div>
+
+        <button id="optimise" class="primary-button" type="button">
+          <span>Optimise my route</span><span class="button-arrow">→</span>
+        </button>
+
+        <p class="microcopy">
+          RouteFlex now uses OSRM Table for travel-time/distance matrices, then
+          OSRM Route to draw the final road geometry. This is a static route plan
+          and does not use live traffic data.
+        </p>
+      </div>
+
+      <div class="panel map-panel">
+        <div class="panel-heading map-heading">
+          <div>
+            <p class="section-kicker">02</p>
+            <h2>Your route</h2>
+          </div>
+          <div class="map-actions">
+            <div id="route-status" class="route-status" aria-live="polite">Waiting for stops</div>
+            <div class="map-action-buttons">
+              <button id="use-current-location" class="secondary-button" type="button">Use my location</button>
+              <button id="recalculate-remaining-route" class="secondary-button" type="button">Recalculate remaining route</button>
+              <button id="expand-map" class="secondary-button" type="button">Expand map</button>
+              <button id="download-route" class="secondary-button" type="button">Download / Export Route</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="map" class="map" aria-label="Interactive route map"></div>
+
+        <div class="stats-grid">
+          <div class="stat">
+            <span class="stat-icon">⌁</span>
+            <div><strong id="distance">—</strong><small>miles</small></div>
+          </div>
+          <div class="stat">
+            <span class="stat-icon">◷</span>
+            <div><strong id="duration">—</strong><small>driving time</small></div>
+          </div>
+          <div class="stat">
+            <span class="stat-icon">●</span>
+            <div><strong id="route-stops">—</strong><small>stops</small></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel route-summary-panel">
+      <div class="panel-heading route-summary-heading">
+        <div>
+          <p class="section-kicker">03</p>
+          <h2>Route summary</h2>
+        </div>
+        <div class="route-summary-actions">
+          <div class="route-options" aria-label="Route options">
+            <button id="route-option-fastest" class="secondary-button route-option is-selected" type="button">Fastest</button>
+            <button id="route-option-shortest" class="secondary-button route-option" type="button">Shortest</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary-grid">
+        <div class="summary-card summary-card-primary">
+          <span class="summary-label">BEST ROUTE</span>
+          <strong id="selected-route-label">Fastest</strong>
+        </div>
+        <div class="summary-card">
+          <span class="summary-label">Total miles</span>
+          <strong id="summary-total-miles">—</strong>
+        </div>
+        <div class="summary-card">
+          <span class="summary-label">Total driving time</span>
+          <strong id="summary-driving-time">—</strong>
+        </div>
+        <div class="summary-card">
+          <span class="summary-label">Deliveries</span>
+          <strong id="summary-deliveries">—</strong>
+        </div>
+        <div class="summary-card">
+          <span class="summary-label">Start / depot</span>
+          <strong id="summary-start">—</strong>
+        </div>
+        <div class="summary-card">
+          <span class="summary-label">Return to start</span>
+          <strong id="summary-return">—</strong>
+        </div>
+      </div>
+
+      <div class="route-preferences">
+        <div class="route-preferences-label">Route preferences</div>
+        <div class="route-preferences-grid">
+          <button class="secondary-button pref-button" type="button" disabled>Prefer motorways</button>
+          <button class="secondary-button pref-button" type="button" disabled>Avoid tolls</button>
+          <button class="secondary-button pref-button" type="button" disabled>Vehicle type</button>
+        </div>
+      </div>
+
+      <button id="start-driver-mode" class="primary-button driver-button" type="button" hidden>🚐 START DRIVER MODE</button>
+    </section>
+
+    <section class="panel saved-routes-panel">
+      <div class="panel-heading saved-routes-heading">
+        <div>
+          <p class="section-kicker">03B</p>
+          <h2>Saved routes</h2>
+        </div>
+      </div>
+
+      <div class="saved-routes-controls">
+        <label class="field-label" for="route-name-input">Route name</label>
+        <div class="saved-route-name-row">
+          <input id="route-name-input" class="postcode-input" type="text" placeholder="e.g. Monday round">
+        </div>
+
+        <div class="saved-routes-actions">
+          <button id="save-route" class="primary-button saved-route-button" type="button">Save Route</button>
+          <button id="load-saved-route" class="secondary-button" type="button">Load Saved Route</button>
+          <button id="delete-saved-route" class="secondary-button" type="button">Delete Saved Route</button>
+        </div>
+
+        <label class="field-label" for="saved-routes-list">Saved routes</label>
+        <select id="saved-routes-list" class="saved-routes-select">
+          <option value="">No saved routes</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="panel route-list-panel">
+      <div class="panel-heading">
+        <div>
+          <p class="section-kicker">04</p>
+          <h2>Stop-by-stop route</h2>
+        </div>
+        <div class="panel-actions">
+          <button id="open-navigation" class="secondary-button" type="button" disabled>Open in Maps</button>
+        </div>
+      </div>
+      <div id="route-list" class="empty-state">
+        <div class="empty-icon">☷</div>
+        <p>Your optimised stops will appear here.</p>
+      </div>
+    </section>
+
+    <section class="panel help-panel">
+      <div class="panel-heading">
+        <div>
+          <p class="section-kicker">05</p>
+          <h2>Help / About</h2>
+        </div>
+      </div>
+
+      <div class="help-grid">
+        <div class="help-card">
+          <h3>How RouteFlex works</h3>
+          <p>Enter a depot/start postcode and one or more delivery postcodes. RouteFlex validates the postcodes, optimises the order, builds the road route and shows the stops for you.</p>
+        </div>
+        <div class="help-card">
+          <h3>Voice input</h3>
+          <p>Use the microphone buttons beside the start postcode and delivery postcodes where your browser supports Web Speech Recognition. Spoken postcodes are cleaned into standard postcode format.</p>
+        </div>
+        <div class="help-card">
+          <h3>Driver Mode</h3>
+          <p>Use Driver Mode on a phone for a simplified route view with current delivery, progress, leg distance/time, navigation and delivery controls.</p>
+        </div>
+        <div class="help-card">
+          <h3>Navigation & export</h3>
+          <p>Navigate opens the current stop in Google Maps or Apple Maps where available. Route export downloads a CSV style route file for spreadsheet use.</p>
+        </div>
+        <div class="help-card">
+          <h3>Live traffic</h3>
+          <p>RouteFlex uses available routing data from the current free/static setup and does not provide live traffic unless a future traffic provider is added.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span>RouteFlex V1</span>
+      <span>Map data © OpenStreetMap contributors</span>
+    </footer>
+  </main>
+
+  <div id="driver-mode-overlay" class="driver-mode-overlay" hidden>
+    <div class="driver-mode-panel" role="dialog" aria-modal="true" aria-label="Driver mode">
+      <div class="driver-mode-header">
+        <div>
+          <p class="section-kicker">DRIVER MODE</p>
+          <h2 id="driver-mode-title">Route progress</h2>
+        </div>
+        <button id="exit-driver-mode" class="secondary-button" type="button">Exit</button>
+      </div>
+
+      <div id="driver-mode-progress" class="driver-mode-progress">0 of 0 deliveries completed</div>
+      <div id="driver-mode-status" class="driver-mode-status">Ready</div>
+
+      <div id="driver-mode-current-stop" class="driver-mode-card">
+        <div class="driver-mode-row">
+          <span class="driver-mode-label">Current delivery</span>
+          <strong id="driver-stop-number">—</strong>
+        </div>
+        <div class="driver-mode-row">
+          <span class="driver-mode-label">Delivery postcode</span>
+          <strong id="driver-postcode">—</strong>
+        </div>
+        <div class="driver-mode-row">
+          <span class="driver-mode-label">House / unit</span>
+          <strong id="driver-house-unit">—</strong>
+        </div>
+        <div class="driver-mode-row">
+          <span class="driver-mode-label">Street / address</span>
+          <strong id="driver-street">—</strong>
+        </div>
+        <div class="driver-mode-row">
+          <span class="driver-mode-label">Delivery notes</span>
+          <strong id="driver-notes">—</strong>
+        </div>
+        <div class="driver-mode-row">
+          <span class="driver-mode-label">Current leg distance</span>
+          <strong id="driver-distance">—</strong>
+        </div>
+        <div class="driver-mode-row">
+          <span class="driver-mode-label">Current leg driving time</span>
+          <strong id="driver-duration">—</strong>
+        </div>
+        <div class="driver-mode-row">
+          <span class="driver-mode-label">Remaining route distance</span>
+          <strong id="driver-remaining-distance">—</strong>
+        </div>
+        <div class="driver-mode-row">
+          <span class="driver-mode-label">Remaining route driving time</span>
+          <strong id="driver-remaining-duration">—</strong>
+        </div>
+        <div class="driver-mode-row">
+          <span class="driver-mode-label">Delivery progress</span>
+          <strong id="driver-remaining-stops">—</strong>
+        </div>
+      </div>
+
+      <div id="driver-mode-run-complete" class="driver-mode-run-complete" hidden>
+        <h3>RUN COMPLETE</h3>
+        <p id="driver-mode-complete-text">All deliveries have been completed.</p>
+        <p id="driver-mode-return-text" class="driver-mode-return-text">Return to depot/home</p>
+        <button id="driver-mode-return-home" class="primary-button driver-button-large" type="button">NAVIGATE TO START</button>
+      </div>
+
+      <div class="driver-mode-actions">
+        <button id="driver-mode-navigate" class="primary-button driver-button-large" type="button">NAVIGATE</button>
+        <div class="driver-mode-secondary-actions">
+          <button id="driver-mode-previous" class="secondary-button" type="button">Previous Stop</button>
+          <button id="driver-mode-next" class="secondary-button" type="button">Next Stop</button>
+          <button id="driver-mode-mark-delivered" class="secondary-button driver-mode-delivered" type="button">Mark Delivered</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  crossorigin="">
+</script>
+
+<script src="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js"></script>
+
+<script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet/leaflet-maplibre-gl.js"></script>
+
+<script src="app.js"></script>
+</body>
+</html>
