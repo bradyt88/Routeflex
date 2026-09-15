@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, viewport-fit=cover">
   <meta name="theme-color" content="#0b0f12">
-  <meta name="description" content="Route planner prototype for van drivers">
+  <meta name="description" content="Multi-stop route planner for UK van drivers">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="RouteFlex">
   <link rel="manifest" href="manifest.json">
-  <title>RouteFlex — Van Route Planner</title>
+  <title>RouteFlex — UK Van Route Planner</title>
 
   <link rel="preconnect" href="https://unpkg.com">
   <link rel="preconnect" href="https://tile.openstreetmap.org">
@@ -33,20 +33,16 @@
           <div class="brand-tag">PLAN. DRIVE. DELIVER.</div>
         </div>
       </div>
-      <div class="status-pill"><span class="status-dot"></span> V1 PROTOTYPE</div>
+      <div class="status-pill"><span class="status-dot"></span> V1 BETA</div>
     </header>
 
-    <section class="hero">
-      <div>
+    <section class="hero hero-image" aria-label="RouteFlex van route planner">
+      <img class="hero-image-art" src="assets/routeflex-hero.jpg" alt="RouteFlex delivery van driving on a road"
+           onerror="this.onerror=null; this.src='assets/routeflex-van.svg'; this.classList.add('hero-fallback');">
+      <div class="hero-image-overlay">
         <p class="eyebrow">VAN DRIVER ROUTE PLANNER</p>
         <h1>Get the route.<br><span>Get moving.</span></h1>
-        <p class="hero-copy">
-          Enter your start and delivery postcodes. RouteFlex validates them,
-          orders the stops and draws the road route for you.
-        </p>
-      </div>
-      <div class="hero-icon" aria-hidden="true">
-        <img src="assets/routeflex-van.svg" alt="Modern delivery van" width="220" height="130">
+        <p class="hero-copy">Plan multi-stop van routes quickly, then take the route with you in Driver Mode.</p>
       </div>
     </section>
 
@@ -92,9 +88,7 @@
         </button>
 
         <p class="microcopy">
-          RouteFlex now uses OSRM Table for travel-time/distance matrices, then
-          OSRM Route to draw the final road geometry. This is a static route plan
-          and does not use live traffic data.
+          RouteFlex uses OSRM Table for travel-time/distance matrices, then OSRM Route to draw the final road geometry. This is a static route plan and does not use live traffic data.
         </p>
       </div>
 
@@ -110,7 +104,7 @@
               <button id="use-current-location" class="secondary-button" type="button">Use my location</button>
               <button id="recalculate-remaining-route" class="secondary-button" type="button">Recalculate remaining route</button>
               <button id="expand-map" class="secondary-button" type="button">Expand map</button>
-              <button id="download-route" class="secondary-button" type="button">Download / Export Route</button>
+              <button id="download-route" class="secondary-button" type="button">Export Route</button>
             </div>
           </div>
         </div>
@@ -234,7 +228,7 @@
       <div class="panel-heading">
         <div>
           <p class="section-kicker">05</p>
-          <h2>Help / About</h2>
+          <h2>Help & About</h2>
         </div>
       </div>
 
@@ -257,13 +251,13 @@
         </div>
         <div class="help-card">
           <h3>Live traffic</h3>
-          <p>RouteFlex uses available routing data from the current free/static setup and does not provide live traffic unless a future traffic provider is added.</p>
+          <p>Live traffic is planned for a future traffic-aware routing version. The current free/static setup does not provide live traffic.</p>
         </div>
       </div>
     </section>
 
     <footer>
-      <span>RouteFlex V1</span>
+      <span>RouteFlex V1 Beta</span>
       <span>Map data © OpenStreetMap contributors</span>
     </footer>
   </main>
@@ -282,46 +276,16 @@
       <div id="driver-mode-status" class="driver-mode-status">Ready</div>
 
       <div id="driver-mode-current-stop" class="driver-mode-card">
-        <div class="driver-mode-row">
-          <span class="driver-mode-label">Current delivery</span>
-          <strong id="driver-stop-number">—</strong>
-        </div>
-        <div class="driver-mode-row">
-          <span class="driver-mode-label">Delivery postcode</span>
-          <strong id="driver-postcode">—</strong>
-        </div>
-        <div class="driver-mode-row">
-          <span class="driver-mode-label">House / unit</span>
-          <strong id="driver-house-unit">—</strong>
-        </div>
-        <div class="driver-mode-row">
-          <span class="driver-mode-label">Street / address</span>
-          <strong id="driver-street">—</strong>
-        </div>
-        <div class="driver-mode-row">
-          <span class="driver-mode-label">Delivery notes</span>
-          <strong id="driver-notes">—</strong>
-        </div>
-        <div class="driver-mode-row">
-          <span class="driver-mode-label">Current leg distance</span>
-          <strong id="driver-distance">—</strong>
-        </div>
-        <div class="driver-mode-row">
-          <span class="driver-mode-label">Current leg driving time</span>
-          <strong id="driver-duration">—</strong>
-        </div>
-        <div class="driver-mode-row">
-          <span class="driver-mode-label">Remaining route distance</span>
-          <strong id="driver-remaining-distance">—</strong>
-        </div>
-        <div class="driver-mode-row">
-          <span class="driver-mode-label">Remaining route driving time</span>
-          <strong id="driver-remaining-duration">—</strong>
-        </div>
-        <div class="driver-mode-row">
-          <span class="driver-mode-label">Delivery progress</span>
-          <strong id="driver-remaining-stops">—</strong>
-        </div>
+        <div class="driver-mode-row"><span class="driver-mode-label">Current delivery</span><strong id="driver-stop-number">—</strong></div>
+        <div class="driver-mode-row"><span class="driver-mode-label">Delivery postcode</span><strong id="driver-postcode">—</strong></div>
+        <div class="driver-mode-row"><span class="driver-mode-label">House / unit</span><strong id="driver-house-unit">—</strong></div>
+        <div class="driver-mode-row"><span class="driver-mode-label">Street / address</span><strong id="driver-street">—</strong></div>
+        <div class="driver-mode-row"><span class="driver-mode-label">Delivery notes</span><strong id="driver-notes">—</strong></div>
+        <div class="driver-mode-row"><span class="driver-mode-label">Current leg distance</span><strong id="driver-distance">—</strong></div>
+        <div class="driver-mode-row"><span class="driver-mode-label">Current leg driving time</span><strong id="driver-duration">—</strong></div>
+        <div class="driver-mode-row"><span class="driver-mode-label">Remaining route distance</span><strong id="driver-remaining-distance">—</strong></div>
+        <div class="driver-mode-row"><span class="driver-mode-label">Remaining route driving time</span><strong id="driver-remaining-duration">—</strong></div>
+        <div class="driver-mode-row"><span class="driver-mode-label">Delivery progress</span><strong id="driver-remaining-stops">—</strong></div>
       </div>
 
       <div id="driver-mode-run-complete" class="driver-mode-run-complete" hidden>
@@ -344,15 +308,9 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script
-  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-  crossorigin="">
-</script>
-
-<script src="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js"></script>
-
-<script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet/leaflet-maplibre-gl.js"></script>
-
-<script src="app.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js"></script>
+  <script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet/leaflet-maplibre-gl.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
